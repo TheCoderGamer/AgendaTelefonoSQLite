@@ -1,0 +1,39 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+
+public class Main {
+	private static String dsn = "jdbc:sqlite:data.db";
+	private static Agenda agenda;
+	private static Connection con;	
+	
+	public static void main(String[] args) {
+		Init();
+
+		new UI(agenda);
+		
+		Close();
+	}
+	
+	private static void Init(){
+		try {
+			Class.forName("org.sqlite.JDBC");
+			con = DriverManager.getConnection(dsn);
+			agenda = new Agenda(con);
+		}
+		catch (Exception e) {
+			System.err.println("Error al iniciar la conexion con la base de datos");
+			e.printStackTrace();
+		}
+	}
+	
+	private static void Close(){
+		try {
+			con.close();
+		} 
+		catch (Exception e) {
+			System.err.println("Error al cerrar el programa");
+			e.printStackTrace();
+		}
+	}
+}
