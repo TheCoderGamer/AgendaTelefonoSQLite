@@ -3,7 +3,7 @@
 
 ## Authors
 
-* **Nacho Aguilar** - *Programador, Dieñador y Arte* - [TheCoderGamer1000](https://github.com/TheCoderGamer1000)
+* **Nacho Aguilar** - [TheCoderGamer1000](https://github.com/TheCoderGamer1000)
 
 ## License
 
