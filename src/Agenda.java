@@ -14,6 +14,7 @@ public class Agenda {
 		st.executeUpdate("CREATE TABLE IF NOT EXISTS agenda(usuario VARCHAR, nombre VARCHAR, telefono VARCHAR)");
 	}	
 	
+	// ----- LISTAR -----
 	public void ListContacts(){
 		System.out.println("------ LISTA ------");
 		try {
@@ -31,7 +32,7 @@ public class Agenda {
 		}
 	}
 
-
+	// ----- AÑADIR -----
 	public Boolean AddUser(String usuario, String nombre, String telefono) {
 		try {
 			String sql = "INSERT INTO agenda VALUES (?, ?, ?)";
@@ -49,35 +50,20 @@ public class Agenda {
 		return true;
 	}
 
-
+	// ----- OBTENER -----
     public String GetName(String user) {
 		try {
-			String sql = "SELECT nombre FROM agenda WHERE usuario = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, user);
-			ResultSet rs = st.executeQuery(sql);
-			String name = rs.getString(1);
-			rs.close();
-			st.close();
-			return name;
+			return Select("nombre", user);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
     }
-
 
     public String GetTel(String user) {
         try {
-			String sql = "SELECT telefono FROM agenda WHERE usuario = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, user);
-			ResultSet rs = st.executeQuery(sql);
-			String tel = rs.getString(1);
-			rs.close();
-			st.close();
-			return tel;
+			return Select("telefono", user);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -85,15 +71,21 @@ public class Agenda {
 		}
     }
 
+	private String Select(String selection, String user) throws SQLException {
+		String sql = "SELECT "+ selection + " FROM agenda WHERE usuario = ?";
+		PreparedStatement st = con.prepareStatement(sql);
+		st.setString(1, user);
+		ResultSet rs = st.executeQuery(sql);
+		String result = rs.getString(1);
+		rs.close();
+		st.close();
+		return result;
+	}
 
+	// ----- MODIFICAR -----
     public Boolean ModifyUsername(String oldUser, String newUser) {
         try {
-			String sql = "UPDATE agenda SET usuario = ? WHERE usuario = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, newUser);
-			st.setString(2, oldUser);
-			st.executeUpdate(sql);
-			st.close();
+			Modify("usuario", oldUser, newUser);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -101,16 +93,10 @@ public class Agenda {
 		}
 		return true;
     }
-
-
+	
     public Boolean ModifyName(String user, String nombre) {
-        try {
-			String sql = "UPDATE agenda SET nombre = ? WHERE usuario = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, nombre);
-			st.setString(2, user);
-			st.executeUpdate(sql);
-			st.close();
+		try {
+			Modify("nombre", user, nombre);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -118,16 +104,10 @@ public class Agenda {
 		}
 		return true;
     }
-
-
+	
     public Boolean ModifyTel(String user, String telefono) {
-        try {
-			String sql = "UPDATE agenda SET telefono = ? WHERE usuario = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, telefono);
-			st.setString(2, user);
-			st.executeUpdate(sql);
-			st.close();
+		try {
+			Modify("telefono", user, telefono);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -135,8 +115,17 @@ public class Agenda {
 		}
 		return true;
     }
-
-
+	
+	private void Modify(String type, String user, String newData) throws SQLException {
+		String sql = "UPDATE agenda SET "+ type + " = ? WHERE usuario = ?";
+		PreparedStatement st = con.prepareStatement(sql);
+		st.setString(1, newData);
+		st.setString(2, user);
+		st.executeUpdate(sql);
+		st.close();
+	}
+	
+	// ----- ELIMINAR -----
     public Boolean RemoveUser(String user) {
         try {
 			String sql = "DELETE FROM agenda WHERE usuario = ?";
